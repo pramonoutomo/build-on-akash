@@ -1,0 +1,63 @@
+---
+version: "2.0"
+
+services:
+  dashd:
+    image: pramonoutomo/dash:0001
+    args:
+      - "-testnet"
+      - "-server"
+      - "-bind=0.0.0.0"
+      - "-rpcallowip=0.0.0.0/0"
+      - "-rpcbind=0.0.0.0"
+      - "-rpcuser=pram"
+      - "-rpcpassword=pram"
+      - "-prune=100000"
+      - "-masternodeblsprivkey=54d73dc8be9114d4e938cfb23713437c8011a4a43b2e8e70452dcc6f4d77b962"
+    params:
+      storage:
+        data:
+          mount: /root/.dashcore
+    expose:
+      - port: 9998
+        as: 9998
+        to:
+          - global: true
+      - port: 9999
+        as: 9999
+        to:
+          - global: true
+      - port: 19998
+        as: 19998
+        to:
+          - global: true
+      - port: 19999
+        as: 19999
+        to:
+          - global: true
+profiles:
+  compute:
+    dashd-profile:
+      resources:
+        cpu:
+          units: 2.0
+        memory:
+          size: 8Gi
+        storage:
+          - size: 4Gi
+          - name: data
+            size: 64Gi
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    westcoast:
+      pricing:
+        dashd-profile:
+          denom: uakt
+          amount: 1000.1
+deployment:
+  dashd:
+    westcoast:
+      profile: dashd-profile
+      count: 1

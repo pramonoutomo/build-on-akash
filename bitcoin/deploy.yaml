@@ -1,0 +1,35 @@
+---
+version: "2.0"
+services:
+  bitcoin:
+    image: ruimarinho/bitcoin-core
+    expose:
+      - port: 8332
+        to:
+          - global: true
+    args:
+      - "--rpcuser=user"
+      - "--rpcpassword=password"
+      - "--rpcallowip=0.0.0.0/0"
+      - "--rpcbind=0.0.0.0:8332"
+profiles:
+  compute:
+    bitcoin-profile:
+      resources:
+        cpu:
+          units: 2.0
+        memory:
+          size: 8Gi
+        storage:
+          size: 64Gi
+  placement:
+    westcoast:
+      pricing:
+        bitcoin-profile:
+          denom: uakt
+          amount: 1000
+deployment:
+  bitcoin:
+    westcoast:
+      profile: bitcoin-profile
+      count: 1

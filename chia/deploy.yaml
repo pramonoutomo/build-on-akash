@@ -1,0 +1,46 @@
+version: "2.0"
+services:
+  chia:
+    image: cryptoandcoffee/akash-chia:72
+    expose:
+      - port: 8080
+        as: 80
+        proto: tcp
+        to:
+          - global: true
+    params:
+      storage:
+        data:
+          mount: /plots
+    env:
+      - CONTRACT=xch1efqz665z69zhwrqj04052dm2ye5pewzerc3huyw23zkv4usmjy6qksjpzd
+      - FARMERKEY=a75f9f04bba0250f8484823bc9a126677255efa63c6364e44baccf7ad2f1f7dbe1cc36dffb55669e9dae52fa3d028979
+      - REMOTE_LOCATION=local
+      - PLOTTER=blade
+      - THREADS=10
+profiles:
+  compute:
+    chia:
+      resources:
+        cpu:
+          units: 10
+        memory:
+          size: 420Gi
+        storage:
+          - size: 1Gi
+          - name: data
+            size: 512Gi
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    westcoast:
+      pricing:
+        chia:
+          denom: uakt
+          amount: 100000
+deployment:
+  chia:
+    westcoast:
+      profile: chia
+      count: 1

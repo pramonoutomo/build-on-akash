@@ -1,0 +1,35 @@
+---
+version: "2.0"
+
+services:
+  pawd:
+    image: pramonoutomo/paw:0005
+    expose:
+      - port: 9999
+        as: 9999
+        to:
+          - global: true
+profiles:
+  compute:
+    pawd-profile:
+      resources:
+        cpu:
+          units: 2.0
+        memory:
+          size: 4Gi
+        storage:
+            size: 64Gi
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    westcoast:
+      pricing:
+        pawd-profile:
+          denom: uakt
+          amount: 1000
+deployment:
+  pawd:
+    westcoast:
+      profile: pawd-profile
+      count: 1

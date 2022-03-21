@@ -1,0 +1,44 @@
+---
+version: "2.0"
+
+services:
+  ipfsgo:
+    image: ipfs/go-ipfs:latest
+    expose:
+      - port: 4001
+        as: 4001
+        to:
+          - global: true
+      - port: 5001
+        as: 5001
+        to:
+          - global: true
+      - port: 8080
+        as: 8080
+        to:
+          - global: true
+    
+profiles:
+  compute:
+    ipfsgo-profile:
+      resources:
+        cpu:
+          units: 8.0
+        memory:
+          size: 32Gi
+        storage:
+            size: 128Gi
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    westcoast:
+      pricing:
+        ipfsgo-profile:
+          denom: uakt
+          amount: 1000.1
+deployment:
+  ipfsgo:
+    westcoast:
+      profile: ipfsgo-profile
+      count: 1

@@ -1,0 +1,40 @@
+version: "2.0"
+
+services:
+  web:
+    image: amaurerrise/arb-node:1.2
+    expose:
+      - port: 8547
+        as: 8547
+        to:
+          - global: true
+      - port: 9642
+        as: 9642
+        to:
+          - global: true
+    args:
+      - "--l1.url=https://speedy-nodes-nyc.moralis.io/c6755bdf9fb98edeb1f5ecc4/eth/mainnet"
+
+
+profiles:
+  compute:
+    web:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: 2048Mi
+        storage:
+          size: 10240Mi
+  placement:
+    westcoast:
+      pricing:
+        web:
+          denom: uakt
+          amount: 1000
+
+deployment:
+  web:
+    westcoast:
+      profile: web
+      count: 1

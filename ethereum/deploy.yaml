@@ -1,0 +1,52 @@
+---
+version: "2.0"
+
+services:
+  ethereumgo:
+    image: ethereum/client-go:latest
+    expose:
+      - port: 8545
+        as: 8545
+        to:
+          - global: true
+      - port: 30303
+        as: 30303
+        to:
+          - global: true
+    args:
+      - "--http"
+      - "--http.addr=0.0.0.0"
+      - "--http.port=8545"
+      - "--http.corsdomain=*"
+      - "--http.api=eth,net,web3,personal"
+      - "--ws.origins=*"
+      - "--ws.addr=0.0.0.0"
+      - "--ws"
+      - "--metrics"
+      - "--metrics.addr=0.0.0.0"
+      - "--cache=9216"
+      - "--maxpeers=100"
+      - "--rpc.gascap=0"
+      - "--rpc.txfeecap=0"
+      - "--http.vhosts=*"
+profiles:
+  compute:
+    ethereumgo-profile:
+      resources:
+        cpu:
+          units: 2.0
+        memory:
+          size: 8Gi
+        storage:
+          size: 64Gi
+  placement:
+    westcoast:
+      pricing:
+        ethereumgo-profile:
+          denom: uakt
+          amount: 1000
+deployment:
+  ethereumgo:
+    westcoast:
+      profile: ethereumgo-profile
+      count: 1
